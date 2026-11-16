@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Farol das Nove Luzes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mar:#0F5C7A; --mar2:#1C8CA8; --espuma:#FBFDF6; --basalto:#25303B;
+  --sol:#FFC83D; --sol2:#E09A00; --hort:#6D7FE0; --hort2:#4856B0;
+  --pasto:#58B368; --pasto2:#3A8A4B; --rosa:#EF6FA8; --areia:#F4E4B4;
+  --erro:#D8483F;
+}
+*{box-sizing:border-box}
+html{font-size:20px}
+body{margin:0;font-family:"Andika","Trebuchet MS",Verdana,sans-serif;color:var(--basalto);
+  background:var(--mar);min-height:100vh;line-height:1.5;
+  background-image:radial-gradient(ellipse 60px 14px at 30px 20px,rgba(255,255,255,.07) 98%,transparent),
+                   radial-gradient(ellipse 60px 14px at 90px 60px,rgba(255,255,255,.05) 98%,transparent);
+  background-size:120px 80px}
+h1,h2,h3,.tit{font-family:"Baloo 2","Trebuchet MS",sans-serif;font-weight:800;line-height:1.1;margin:0}
+h1{font-size:2.4rem} h2{font-size:1.7rem} h3{font-size:1.25rem}
+p{margin:.4rem 0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:4px solid var(--rosa);outline-offset:3px}
+#app{max-width:1040px;margin:0 auto;padding:.6rem .7rem 3rem}
+
+/* botões tipo brinquedo */
+.btn{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:1.15rem;border:0;border-radius:18px;
+  padding:.55rem 1.2rem;min-height:56px;background:var(--sol);box-shadow:0 6px 0 var(--sol2);
+  transition:transform .08s,box-shadow .08s;display:inline-flex;align-items:center;gap:.4rem;justify-content:center}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--sol2)}
+.btn.azul{background:var(--hort);color:#fff;box-shadow:0 6px 0 var(--hort2)}
+.btn.azul:active{box-shadow:0 2px 0 var(--hort2)}
+.btn.verde{background:var(--pasto);color:#fff;box-shadow:0 6px 0 var(--pasto2)}
+.btn.verde:active{box-shadow:0 2px 0 var(--pasto2)}
+.btn.branco{background:#fff;box-shadow:0 6px 0 #c9d6d8}
+.btn.branco:active{box-shadow:0 2px 0 #c9d6d8}
+.btn.peq{min-height:44px;font-size:.95rem;padding:.3rem .8rem;border-radius:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.ouvir{background:#fff;border:3px solid var(--hort);color:var(--hort2);border-radius:999px;min-height:48px;
+  padding:.2rem .9rem;font-family:"Baloo 2",sans-serif;font-weight:800;font-size:1rem}
+.ouvir:active{background:#e8ebff}
+
+.folha{background:var(--espuma);border-radius:28px;padding:1.2rem;border:5px solid var(--areia)}
+.centro{text-align:center}
+.linha{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.linha.c{justify-content:center}
+.esp{margin-top:1rem}
+.claro{color:#fff}
+
+/* barra de topo */
+.topo{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:var(--espuma);border-radius:22px;
+  padding:.35rem .7rem;margin-bottom:.7rem;border:4px solid var(--areia)}
+.topo .quem{display:flex;align-items:center;gap:.5rem;flex:1 1 220px;min-width:0}
+.topo .quem svg{width:54px;height:62px;flex:none}
+.topo .nome{font-family:"Baloo 2";font-weight:800;font-size:1.1rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topo .niv{font-size:.8rem}
+.xp{height:12px;background:#dfe9e6;border-radius:9px;overflow:hidden;width:150px;max-width:100%}
+.xp i{display:block;height:100%;background:var(--pasto);border-radius:9px;transition:width .5s}
+.conchas{font-family:"Baloo 2";font-weight:800;font-size:1.2rem;background:#fff;border-radius:14px;padding:.1rem .7rem;border:3px solid var(--areia)}
+.ico{border:0;background:#fff;border-radius:14px;min-width:48px;min-height:48px;font-size:1.3rem;border:3px solid var(--areia)}
+.ico.off{opacity:.45}
+
+/* jogadores */
+.jogadores{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8rem;margin:1rem 0}
+.jog{background:#fff;border:4px solid var(--areia);border-radius:22px;padding:.6rem;text-align:center}
+.jog svg{width:90px;height:105px}
+.jog b{display:block;font-family:"Baloo 2";font-size:1.15rem}
+.jog small{font-size:.75rem}
+input[type=text]{font:inherit;font-size:1.4rem;font-family:"Baloo 2";font-weight:800;padding:.4rem .8rem;border-radius:16px;
+  border:4px solid var(--hort);width:100%;max-width:320px;text-align:center;background:#fff;color:var(--basalto)}
+details{margin-top:1.2rem;font-size:.85rem}
+summary{cursor:pointer;font-weight:700}
+table{border-collapse:collapse;width:100%;margin:.5rem 0}
+td,th{padding:.3rem .4rem;border-bottom:2px solid #e3ebe6;text-align:left}
+
+/* avatar */
+.cria{display:grid;grid-template-columns:240px 1fr;gap:1.2rem;align-items:start}
+.cria .ver{background:linear-gradient(#bfe9f5 60%,#7ecbe0 60%);border-radius:24px;text-align:center;padding:.6rem;position:sticky;top:.5rem}
+.cria .ver svg{width:200px;height:233px}
+.opc{display:flex;flex-wrap:wrap;gap:.45rem;margin:.2rem 0 .8rem}
+.op{min-width:52px;min-height:52px;border-radius:14px;border:4px solid #d8e2de;background:#fff;font-size:1.3rem;padding:0 .5rem;
+  font-family:"Baloo 2";font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:.25rem}
+.op.cor{width:52px}
+.op.sel{border-color:var(--basalto);box-shadow:0 0 0 3px var(--sol)}
+.op.fechado{opacity:.6;font-size:.9rem}
+@media(max-width:640px){.cria{grid-template-columns:1fr}.cria .ver{position:static}.cria .ver svg{width:130px;height:152px}}
+
+/* história */
+.cena{display:grid;grid-template-columns:150px 1fr;gap:1rem;align-items:center}
+.cena .fig{font-size:5rem;text-align:center;line-height:1}
+.cena .fig svg{width:140px;height:140px}
+.cena p{font-size:1.15rem}
+@media(max-width:560px){.cena{grid-template-columns:1fr}.cena .fig svg{width:100px;height:100px}}
+
+/* mapa */
+.mapa{background:linear-gradient(#1C8CA8,#0F5C7A);border-radius:28px;border:5px solid var(--areia);overflow:hidden}
+.mapa svg{display:block;width:100%;height:auto}
+.ilha{cursor:pointer}
+.ilha text{font-family:"Baloo 2",sans-serif;font-weight:800}
+.ilha:focus-visible{outline:none}
+.ilha:focus-visible .terra{stroke:var(--rosa);stroke-width:8}
+.pulsa{animation:pulsa 1.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes pulsa{50%{transform:scale(1.25);opacity:.4}}
+.missoes{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.8rem}
+.mis{background:var(--espuma);border:4px solid var(--areia);border-radius:18px;padding:.5rem .7rem;text-align:left;display:flex;gap:.5rem;align-items:center;min-height:64px}
+.mis .n{font-family:"Baloo 2";font-weight:800;font-size:1.3rem;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none}
+.mis b{font-family:"Baloo 2";display:block;line-height:1.1}
+.mis small{font-size:.75rem;display:block;line-height:1.2}
+.mis.fech{opacity:.55}
+.mis.agora{border-color:var(--sol);box-shadow:0 0 0 4px var(--sol)}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;margin-top:.8rem}
+
+/* jogo */
+.prog{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}
+.prog i{width:26px;height:14px;border-radius:8px;background:rgba(255,255,255,.3)}
+.prog i.ok{background:var(--sol)} .prog i.meio{background:#ffe7a6} .prog i.at{background:#fff}
+.prob{display:grid;grid-template-columns:1fr 300px;gap:1rem;align-items:start}
+@media(max-width:820px){.prob{grid-template-columns:1fr}}
+.enun{font-size:1.25rem;line-height:1.55}
+.enun .frase{display:block;margin-bottom:.25rem}
+.perg{background:#fff3c9;border-radius:16px;padding:.5rem .8rem;font-weight:700;font-size:1.2rem;margin:.6rem 0;border-left:8px solid var(--sol)}
+.passo{font-family:"Baloo 2";font-weight:800;color:var(--hort2);font-size:.95rem}
+.feito{background:#e3f4e4;border-radius:14px;padding:.3rem .7rem;margin:.3rem 0;font-weight:700}
+.resp{display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.3rem 0 .6rem;font-family:"Baloo 2";font-weight:800;font-size:1.2rem;flex-wrap:wrap}
+.visor{min-width:110px;height:68px;border-radius:18px;border:5px solid var(--hort);background:#fff;font-size:2.4rem;display:grid;place-items:center;padding:0 .6rem}
+.visor.mal{border-color:var(--erro);animation:abana .35s}
+.visor.bem{border-color:var(--pasto);background:#e3f4e4}
+@keyframes abana{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.teclas{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+.tecla{font-family:"Baloo 2";font-weight:800;font-size:1.7rem;min-height:60px;border-radius:16px;border:0;background:#fff;box-shadow:0 5px 0 #c9d6d8}
+.tecla:active{transform:translateY(3px);box-shadow:0 2px 0 #c9d6d8}
+.escolhas{display:grid;gap:.5rem}
+.fala{border-radius:18px;padding:.6rem .8rem;margin:.6rem 0;font-weight:700;display:flex;gap:.6rem;align-items:center}
+.fala.bem{background:#e3f4e4;border:3px solid var(--pasto)}
+.fala.mal{background:#fde5e2;border:3px solid var(--erro)}
+.fala.dica{background:#eef0ff;border:3px solid var(--hort);display:block}
+.fala svg{width:56px;height:56px;flex:none}
+.painel{background:#e9f4f6;border-radius:22px;padding:.8rem}
+
+/* modelo de barras */
+.mb{margin:.5rem 0;font-family:"Baloo 2";font-weight:800;font-size:1.15rem;text-align:center}
+.mb .todo{background:var(--hort);color:#fff;border-radius:12px;padding:.25rem;margin-bottom:5px}
+.mb .partes{display:flex;gap:5px}
+.mb .partes span{background:var(--sol);border-radius:12px;padding:.25rem;min-width:44px}
+.mb .q{background:#fff!important;color:var(--erro)!important;border:4px dashed var(--erro)}
+.mb .cmp{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;align-items:center;text-align:left}
+.mb .cmp .b{display:flex;gap:4px}
+.mb .cmp .b span{border-radius:12px;padding:.2rem .5rem;background:var(--sol);text-align:center;min-width:44px}
+.mb .cmp .b .dif{background:#ffe0ee;border:4px dashed var(--rosa)}
+.mb small{font-family:"Andika";font-weight:400;font-size:.8rem;display:block;margin-top:.3rem}
+.graf{display:flex;align-items:flex-end;gap:14px;height:190px;padding:10px 10px 0;border-left:4px solid var(--basalto);border-bottom:4px solid var(--basalto);margin:.5rem 0 2.2rem 1rem;max-width:340px}
+.graf div{flex:1;background:var(--hort);border-radius:10px 10px 0 0;position:relative;font-family:"Baloo 2";font-weight:800;color:#fff;text-align:center;font-size:1.1rem}
+.graf div em{position:absolute;bottom:-1.7rem;left:-10px;right:-10px;color:var(--basalto);font-style:normal;font-size:.85rem}
+
+/* resultado, loja, crachás */
+.estrelas{font-size:3.4rem;letter-spacing:.3rem;line-height:1}
+.estrelas .off{opacity:.2;filter:grayscale(1)}
+.luz{width:120px;height:120px;border-radius:50%;margin:.6rem auto;display:grid;place-items:center;font-size:3rem;animation:brilha 2s ease-in-out infinite}
+@keyframes brilha{50%{box-shadow:0 0 0 18px rgba(255,200,61,.25),0 0 0 36px rgba(255,200,61,.12)}}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.7rem;margin-top:.8rem}
+.item{background:#fff;border:4px solid var(--areia);border-radius:20px;padding:.6rem;text-align:center}
+.item .e{font-size:2.6rem;line-height:1.1}
+.item b{font-family:"Baloo 2";display:block;line-height:1.1}
+.item small{font-size:.75rem;display:block;line-height:1.25;margin:.2rem 0}
+.item.falta{opacity:.5}
+.item.falta .e{filter:grayscale(1)}
+.aviso{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--basalto);color:#fff;border-radius:18px;padding:.6rem 1.1rem;
+  font-family:"Baloo 2";font-weight:800;z-index:50;max-width:92vw;text-align:center;animation:desce .3s}
+@keyframes desce{from{top:-60px}}
+.conf{position:fixed;top:-40px;font-size:1.8rem;z-index:40;pointer-events:none;animation:cai 1.6s ease-in forwards}
+@keyframes cai{to{transform:translateY(105vh) rotate(360deg)}}
+
+/* memória */
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;max-width:520px;margin:1rem auto}
+.carta{aspect-ratio:1;border-radius:18px;border:0;background:var(--hort);color:transparent;font-family:"Baloo 2";font-weight:800;font-size:1.5rem;box-shadow:0 5px 0 var(--hort2)}
+.carta.v{background:#fff;color:var(--basalto);box-shadow:0 5px 0 #c9d6d8}
+.carta.par{background:#e3f4e4;color:var(--pasto2);box-shadow:none}
+.seq{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:1rem 0}
+.seq span{width:70px;height:70px;border-radius:18px;background:#fff;border:4px solid var(--areia);display:grid;place-items:center;font-family:"Baloo 2";font-weight:800;font-size:1.7rem}
+.conta{font-family:"Baloo 2";font-weight:800;font-size:3rem;text-align:center;margin:.6rem 0}
+.passo-n{display:inline-flex;align-items:center;gap:.5rem;font-family:"Baloo 2";font-weight:800;font-size:1.6rem}
+.diploma{border:8px double var(--sol2);background:#fffdf2;border-radius:20px;padding:1.4rem;text-align:center}
+@media(max-width:700px){.missoes{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){html{font-size:18px}.missoes{grid-template-columns:1fr}
+ .topo{gap:.25rem;padding:.25rem .4rem;flex-wrap:nowrap}.topo .quem{flex:1 1 60px;gap:.3rem}.topo .quem svg{width:38px;height:44px}
+ .topo .niv,.topo .xp{display:none}.topo .nome{font-size:.95rem}.ico{min-width:40px;min-height:40px;font-size:1.05rem}.conchas{font-size:1rem;padding:.1rem .4rem;white-space:nowrap}
+ .folha{padding:.8rem;border-radius:22px}.enun{font-size:1.15rem}.tecla{min-height:52px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+/* ============ DADOS ============ */
+const NIVEIS=[[0,"Grumete"],[50,"Navegante"],[130,"Vigia do Mar"],[240,"Piloto"],[380,"Comandante"],[550,"Lenda dos Açores"]];
+const PELE=["#FFDFC4","#F1C27D","#E0AC69","#C68642","#8D5524","#5C3A21"];
+const CABELO=["#2B1B12","#6B3E1E","#B5651D","#E6B422","#D9482B","#8E8E93"];
+const ROUPA=["#EF6FA8","#6D7FE0","#58B368","#FFC83D","#E8603C","#22A6B3"];
+const PENTEADOS=["Curto","Comprido","Caracóis","Totós","Rabo de cavalo","Rapado"];
+const LOJA=[
+ {id:"bone",t:"chapeu",n:"Boné",e:"🧢",c:15},{id:"palha",t:"chapeu",n:"Chapéu de palha",e:"👒",c:25},
+ {id:"pirata",t:"chapeu",n:"Chapéu de pirata",e:"🏴‍☠️",c:40},{id:"coroa",t:"chapeu",n:"Coroa",e:"👑",c:80},
+ {id:"oculos",t:"oculos",n:"Óculos de sol",e:"🕶️",c:20},
+ {id:"tartaruga",t:"amigo",n:"Tartaruga",e:"🐢",c:20},{id:"vaca",t:"amigo",n:"Vaca",e:"🐄",c:30},
+ {id:"golfinho",t:"amigo",n:"Golfinho",e:"🐬",c:50},{id:"baleia",t:"amigo",n:"Baleia",e:"🐳",c:70}
+];
+const CRACHAS=[
+ {id:"luz1",e:"💡",n:"Primeira luz",d:"Recupera a primeira luz."},
+ {id:"luz3",e:"🔦",n:"Três luzes",d:"Recupera três luzes."},
+ {id:"luz6",e:"🌟",n:"Seis luzes",d:"Recupera seis luzes."},
+ {id:"luz9",e:"🗼",n:"Farol aceso",d:"Recupera as nove luzes."},
+ {id:"tres",e:"🏅",n:"Ilha perfeita",d:"Ganha 3 estrelas numa ilha."},
+ {id:"est15",e:"✨",n:"Caçador de estrelas",d:"Junta 15 estrelas."},
+ {id:"est27",e:"🏆",n:"Todas as estrelas",d:"Junta as 27 estrelas."},
+ {id:"cinco",e:"🔥",n:"Cinco seguidas",d:"Acerta 5 problemas seguidos à primeira."},
+ {id:"raio",e:"⚡",n:"Relâmpago",d:"Acerta as 10 contas do Relâmpago."},
+ {id:"memo",e:"🧠",n:"Boa memória",d:"Termina o Jogo da Memória."},
+ {id:"seq",e:"🧩",n:"Detetive de números",d:"Acerta as 6 sequências."},
+ {id:"autor",e:"✏️",n:"Autor de problemas",d:"Inventa e resolve um problema teu."},
+ {id:"estilo",e:"🛍️",n:"Com estilo",d:"Troca conchas por um prémio."}
+];
+// modelos de barras: pw = parte-todo, cmp = comparação, grp = grupos iguais
+const pw=(w,p,x)=>({k:"pw",w,p,x});
+const cmp=(n1,v1,n2,v2,x)=>({k:"cmp",n1,v1,n2,v2,x});
+const grp=(n,e,x,tip)=>({k:"grp",n,e,x,tip});
+const P=(t,a,u,e,h,fig)=>({t,fig,s:[{a,u,e,h}]});
+
+const ILHAS=[
+{id:"smaria",nome:"Santa Maria",tema:"Juntar",cor:"#FFC83D",luz:"Luz Amarela",x:880,y:470,rx:42,ry:26,quem:"👩‍🌾",
+ intro:"Bem-vindos a Santa Maria, a ilha do sol! A pastora Joana anda a juntar tudo o que a tempestade espalhou. Ajuda-a a contar tudo junto.",
+ fim:"A pastora Joana encontrou a Luz Amarela escondida no meio do rebanho. É tua!",
+ probs:[
+ P("No porto estão 7 barcos azuis e 3 barcos vermelhos. Quantos barcos estão no porto ao todo?",10,"barcos","7 + 3",pw(10,[7,3],"w")),
+ P("O Carlos tinha 10 carrinhos. Recebeu no seu aniversário 5 motas. Quantos brinquedos tem o Carlos, agora, ao todo?",15,"brinquedos","10 + 5",pw(15,[10,5],"w")),
+ P("Num cerrado estão 10 vacas malhadas, 5 vacas pretas e 3 vacas castanhas. Quantas vacas estão no cerrado ao todo?",18,"vacas","10 + 5 + 3",pw(18,[10,5,3],"w")),
+ P("Na quinta estão 12 cães barbados, 5 cães de fila e 8 cães de água. Quantos cães estão na quinta ao todo?",25,"cães","12 + 5 + 8",pw(25,[12,5,8],"w")),
+ P("A Luísa apanhou 23 conchas de manhã e 14 conchas à tarde. Quantas conchas apanhou a Luísa ao todo?",37,"conchas","23 + 14",pw(37,[23,14],"w")),
+ P("Num pomar há 15 macieiras, 20 pereiras e 12 laranjeiras. Quantas árvores de fruta há no pomar ao todo?",47,"árvores","15 + 20 + 12",pw(47,[15,20,12],"w")),
+ P("O senhor Luís tinha 42 ovelhas. Comprou mais 15 ovelhas. Com quantas ovelhas ficou o senhor Luís?",57,"ovelhas","42 + 15",pw(57,[42,15],"w")),
+ P("Numa caixa estavam 42 lápis. A Joana colocou 24 lápis na caixa. Em seguida, o José colocou 18 lápis na caixa. Quantos lápis estão agora na caixa ao todo?",84,"lápis","42 + 24 + 18",pw(84,[42,24,18],"w"))
+ ]},
+{id:"smiguel",nome:"São Miguel",tema:"Retirar",cor:"#58B368",luz:"Luz Verde",x:790,y:375,rx:74,ry:26,quem:"👨‍🌾",
+ intro:"Em São Miguel, a ilha verde, o vento levou muita coisa. As vacas fugiram e as castanhas foram comidas! O senhor Jorge quer saber quanto ficou.",
+ fim:"No fundo da Lagoa das Sete Cidades brilhava a Luz Verde. O senhor Jorge pescou-a para ti!",
+ probs:[
+ P("Numa tigela estavam 15 castanhas. A Joana comeu 10 castanhas. Quantas castanhas ficaram na tigela?",5,"castanhas","15 − 10",pw(15,[10,5],1)),
+ P("Num cerrado estavam 27 vacas. Saíram 20 vacas. Quantas vacas ficaram no cerrado?",7,"vacas","27 − 20",pw(27,[20,7],1)),
+ P("Num parque infantil estavam 19 pessoas. Saíram 7 pessoas. Quantas pessoas ficaram no parque infantil?",12,"pessoas","19 − 7",pw(19,[7,12],1)),
+ P("A Patrícia tinha 16 lápis de colorir. Ela deu 4 lápis. Quantos lápis tem agora a Patrícia?",12,"lápis","16 − 4",pw(16,[4,12],1)),
+ P("Num cerrado estavam 9 vacas. Fugiram algumas vacas. Ficaram ainda 4 vacas no cerrado. Quantas vacas fugiram?",5,"vacas","9 − 4",pw(9,[5,4],0)),
+ P("Um galinheiro tinha 26 galinhas. Venderam-se 14 galinhas. Quantas galinhas ficaram no galinheiro?",12,"galinhas","26 − 14",pw(26,[14,12],1)),
+ P("Um jardim tinha 18 rosas. A Érica apanhou algumas rosas. Ficaram ainda 6 rosas no jardim. Quantas rosas apanhou a Érica?",12,"rosas","18 − 6",pw(18,[12,6],0)),
+ P("Numa livraria havia 28 livros. Venderam-se alguns livros. Ficaram ainda 20 livros na livraria. Quantos livros foram vendidos?",8,"livros","28 − 20",pw(28,[8,20],0)),
+ P("Numa cerca estavam 19 patos. Saíram alguns patos. Restaram ainda 8 patos na cerca. Quantos patos saíram?",11,"patos","19 − 8",pw(19,[11,8],0))
+ ]},
+{id:"terceira",nome:"Terceira",tema:"Completar e separar",cor:"#EF6FA8",luz:"Luz Rosa",x:600,y:215,rx:44,ry:30,quem:"🧒",
+ intro:"Na Terceira há festa! Mas falta sempre alguma coisa para tudo ficar completo. O João e a Mariana precisam de saber quanto falta.",
+ fim:"A Luz Rosa estava dentro de uma caderneta de cromos, finalmente completa!",
+ probs:[
+ P("A caderneta do João ficará completa quando ele tiver 18 cromos. Neste momento, o João tem 7 cromos. Quantos cromos faltam ao João para ficar com a caderneta completa?",11,"cromos","18 − 7",pw(18,[7,11],1)),
+ P("Há 14 alunos numa turma. Destes, 4 são rapazes. Quantas são as raparigas?",10,"raparigas","14 − 4",pw(14,[4,10],1)),
+ P("A caixa da Mariana ficará completa quando ela tiver 24 canetas de feltro. Neste momento, a Mariana tem 10 canetas. Quantas canetas faltam à Mariana?",14,"canetas","24 − 10",pw(24,[10,14],1)),
+ P("Há 20 maçãs numa cesta, umas verdes e outras vermelhas. Sabe-se que 7 maçãs são verdes. Quantas maçãs são vermelhas?",13,"maçãs","20 − 7",pw(20,[7,13],1)),
+ P("A estante da sala do Rui leva 19 livros. Estão agora 6 livros na estante. Quantos livros faltam para a estante ficar completa?",13,"livros","19 − 6",pw(19,[6,13],1)),
+ P("No álbum da Mariana é possível colar 28 fotografias. Faltam colar 18 fotografias para o álbum ficar completo. Quantas fotografias já estão coladas no álbum?",10,"fotografias","28 − 18",pw(28,[10,18],0)),
+ P("Um autocarro tem 32 lugares sentados. Estão agora 26 pessoas sentadas. Quantas pessoas podem ainda entrar no autocarro, para que fique com todos os lugares ocupados?",6,"pessoas","32 − 26",pw(32,[26,6],1)),
+ P("Numa escola, 28 alunos foram fazer uma visita de estudo. Deles, 15 eram do segundo ano. Os restantes eram do terceiro ano. Quantos alunos do terceiro ano foram à visita de estudo?",13,"alunos","28 − 15",pw(28,[15,13],1)),
+ P("O senhor Jorge tem 65 aves na sua quinta. 33 são patos. As restantes são galinhas. Quantas galinhas tem o senhor Jorge?",32,"galinhas","65 − 33",pw(65,[33,32],1))
+ ]},
+{id:"graciosa",nome:"Graciosa",tema:"Comparar",cor:"#F4F1E6",luz:"Luz Branca",x:455,y:165,rx:30,ry:22,quem:"👦",
+ intro:"Na Graciosa, a ilha branca, os amigos passam o dia a comparar: quem tem mais? Quem tem menos? Ajuda-os a descobrir a diferença.",
+ fim:"No cimo de um moinho de vento, a Luz Branca esperava por alguém que soubesse comparar. Esse alguém és tu!",
+ probs:[
+ P("A Maria tem 15 lápis. A Joana tem mais 4 lápis do que a Maria. Quantos lápis tem a Joana?",19,"lápis","15 + 4",cmp("Maria",15,"Joana",19,"v2")),
+ P("O Daniel tem 21 conchas. A Catarina tem mais 5 conchas do que o Daniel. Quantas conchas tem a Catarina?",26,"conchas","21 + 5",cmp("Daniel",21,"Catarina",26,"v2")),
+ P("A Margarida tem 18 moedas. O Filipe tem 5 moedas. Quantas moedas tem a Margarida a mais do que o Filipe?",13,"moedas","18 − 5",cmp("Filipe",5,"Margarida",18,"d")),
+ P("A Paula preparou 3 sandes. Ela preparou menos 7 sandes do que a Teresa. Quantas sandes preparou a Teresa?",10,"sandes","3 + 7",cmp("Paula",3,"Teresa",10,"v2")),
+ P("O Rui tem 24 carrinhos. O André tem menos 9 carrinhos do que o Rui. Quantos carrinhos tem o André?",15,"carrinhos","24 − 9",cmp("André",15,"Rui",24,"v1")),
+ P("O Luís tem 23 berlindes. O Luís tem mais 6 berlindes do que o Tomás. Quantos berlindes tem o Tomás?",17,"berlindes","23 − 6",cmp("Tomás",17,"Luís",23,"v1")),
+ P("A Inês tem 9 livros. A Maria tem 27 livros. Quantos livros tem a Inês a menos do que a Maria?",18,"livros","27 − 9",cmp("Inês",9,"Maria",27,"d")),
+ P("Olha para o gráfico das atividades da escola da Sofia. Quantos alunos tem o desporto a mais do que a música?",15,"alunos","40 − 25",cmp("Música",25,"Desporto",40,"d"),{tit:"Atividades ao final da tarde",d:[["Teatro",10],["Desporto",40],["Música",25]]}),
+ P("A Luísa fez 45 queijadas para a festa da escola. A Maria fez mais 12 queijadas do que a Luísa. Quantas queijadas fez a Maria?",57,"queijadas","45 + 12",cmp("Luísa",45,"Maria",57,"v2"))
+ ]},
+{id:"sjorge",nome:"São Jorge",tema:"Multiplicar",cor:"#E8603C",luz:"Luz Laranja",x:475,y:262,rx:62,ry:13,quem:"🧀",
+ intro:"São Jorge é a ilha do queijo! A dona Maria arruma tudo em grupos iguais. Contar um a um demora muito. Usa a multiplicação: é mais rápido!",
+ fim:"Dentro de um queijo enorme havia um brilho laranja. A dona Maria cortou uma fatia e lá estava a Luz Laranja!",
+ probs:[
+ P("A Ana tem 3 caixas com bolos. Em cada caixa estão 2 bolos. Quantos bolos tem a Ana?",6,"bolos","3 × 2",grp(3,2,"t")),
+ P("A Anita guardou as maçãs em 3 cestos. Em cada cesto colocou 5 maçãs. Quantas maçãs colheu a Anita?",15,"maçãs","3 × 5",grp(3,5,"t")),
+ P("Num parque estão 6 bicicletas. Cada bicicleta tem 2 rodas. Quantas rodas têm as bicicletas ao todo?",12,"rodas","6 × 2",grp(6,2,"t")),
+ P("Cada gato tem 4 patas. Quantas patas têm 4 gatos?",16,"patas","4 × 4",grp(4,4,"t")),
+ P("O Rui tem 2 sacos com berlindes. Cada saco tem 9 berlindes. Quantos berlindes tem o Rui ao todo?",18,"berlindes","2 × 9",grp(2,9,"t")),
+ P("A Luísa colocou 6 filhoses em cada prato. Ela usou 3 pratos. Quantas filhoses colocou a Luísa nos pratos ao todo?",18,"filhoses","3 × 6",grp(3,6,"t")),
+ P("Na sala de aula da Isabel há 6 filas com 4 mesas em cada uma. Quantas mesas há na sala?",24,"mesas","6 × 4",grp(6,4,"t")),
+ P("Cada caixa tem 6 ovos. Quantos ovos têm 5 caixas iguais?",30,"ovos","5 × 6",grp(5,6,"t")),
+ P("Cada camião tem 10 rodas. Quantas rodas têm 6 camiões iguais?",60,"rodas","6 × 10",grp(6,10,"t"))
+ ]},
+{id:"pico",nome:"Pico",tema:"Dividir",cor:"#9B6BD6",luz:"Luz Roxa",x:435,y:350,rx:50,ry:22,quem:"🧑‍🎣",
+ intro:"No Pico está a montanha mais alta de Portugal! O Jacinto quer repartir tudo de forma justa: igual para todos. Ajuda-o a dividir.",
+ fim:"Lá no cimo da montanha, acima das nuvens, a Luz Roxa brilhava. O Jacinto subiu contigo para a ir buscar!",
+ probs:[
+ P("A Luísa distribuiu 6 lápis igualmente por 3 alunos. Quantos lápis deu a Luísa a cada aluno?",2,"lápis","6 : 3",grp(3,2,"e")),
+ P("O Salvador distribuiu 8 cromos igualmente por 2 amigos. Quantos cromos deu o Salvador a cada amigo?",4,"cromos","8 : 2",grp(2,4,"e")),
+ P("Numa festa, distribuíram-se 12 balões igualmente por 3 crianças. Quantos balões recebeu cada criança?",4,"balões","12 : 3",grp(3,4,"e")),
+ P("A Sofia tem 8 contas coloridas. A Sofia enfiou 2 contas em cada pulseira. Quantas pulseiras usou ela para colocar todas as contas?",4,"pulseiras","8 : 2",grp(4,2,"n")),
+ P("O Samuel tem 12 carrinhos. Ele quer guardar 3 carrinhos em cada caixa. De quantas caixas precisa o Samuel para guardar todos os carrinhos?",4,"caixas","12 : 3",grp(4,3,"n")),
+ P("Uma turma do segundo ano tem 21 alunos. A professora separou a turma em 3 grupos com o mesmo número de alunos. Quantos alunos ficaram em cada grupo?",7,"alunos","21 : 3",grp(3,7,"e")),
+ P("Numa paragem estão 20 turistas à espera de táxi. Cada táxi transporta 4 turistas. Quantos táxis são necessários para transportar todos os turistas?",5,"táxis","20 : 4",grp(5,4,"n")),
+ P("A dona Susana usou 24 ovos para fazer alguns bolos. Em cada bolo ela colocou 4 ovos. Quantos bolos fez a dona Susana?",6,"bolos","24 : 4",grp(6,4,"n")),
+ P("No recreio, 5 rapazes distribuíram igualmente, entre si, 40 berlindes. Quantos berlindes recebeu cada rapaz?",8,"berlindes","40 : 5",grp(5,8,"e")),
+ P("O Jacinto viu algumas estrelas-do-mar e contou 45 braços. Cada estrela-do-mar tem 5 braços. Quantas estrelas-do-mar viu o Jacinto?",9,"estrelas-do-mar","45 : 5",grp(9,5,"n"))
+ ]},
+{id:"faial",nome:"Faial",tema:"Dobro e metade",cor:"#3FA7F0",luz:"Luz Azul",x:350,y:305,rx:28,ry:22,quem:"🧑‍✈️",
+ intro:"Na marina do Faial, os marinheiros falam de um modo curioso: dobro, triplo, metade, terça parte... Descobre o que eles querem dizer!",
+ fim:"Um marinheiro tinha pintado a Luz Azul no muro da marina, sem saber! Agora ela volta para o farol.",
+ probs:[
+ P("O Manuel tem 5 pássaros de estimação. O Renato tem o dobro dos pássaros do Manuel. Quantos pássaros tem o Renato?",10,"pássaros","2 × 5",grp(2,5,"t","O dobro é 2 vezes.")),
+ P("A Sara tem 8 primos. A Margarida tem o dobro dos primos da Sara. Quantos primos tem a Margarida?",16,"primos","2 × 8",grp(2,8,"t","O dobro é 2 vezes.")),
+ P("A Mafalda tem 12 livros na estante. O irmão tem metade do número de livros da Mafalda. Quantos livros tem o irmão da Mafalda?",6,"livros","12 : 2",grp(2,6,"e","A metade é dividir em 2 partes iguais.")),
+ P("A Cláudia tem 5 anéis. A mãe tem o triplo dos anéis da Cláudia. Quantos anéis tem a mãe da Cláudia?",15,"anéis","3 × 5",grp(3,5,"t","O triplo é 3 vezes.")),
+ P("O Rafael tem 18 balões. O primo tem metade do número de balões do Rafael. Quantos balões tem o primo do Rafael?",9,"balões","18 : 2",grp(2,9,"e","A metade é dividir em 2 partes iguais.")),
+ P("A tia do Leonardo fez 21 biscoitos. O Leonardo comeu a terça parte dos biscoitos. Quantos biscoitos comeu o Leonardo?",7,"biscoitos","21 : 3",grp(3,7,"e","A terça parte é dividir em 3 partes iguais.")),
+ P("O Carlos tem 7 carrinhos. O Bernardo tem o quádruplo dos carrinhos do Carlos. Quantos carrinhos tem o Bernardo?",28,"carrinhos","4 × 7",grp(4,7,"t","O quádruplo é 4 vezes.")),
+ P("O Samuel tem 8 bonecos. O Samuel tem metade do número de bonecos do Tiago. Quantos bonecos tem o Tiago?",16,"bonecos","2 × 8",grp(2,8,"t","Se o Samuel tem metade, o Tiago tem o dobro.")),
+ P("A Mafalda tem 20 livros. A Mafalda tem o dobro do número de livros da prima. Quantos livros tem a prima da Mafalda?",10,"livros","20 : 2",grp(2,10,"e","Se a Mafalda tem o dobro, a prima tem metade.")),
+ P("A mãe da Liliana comprou 25 maçãs. A Liliana comeu a quinta parte das maçãs. Quantas maçãs comeu a Liliana?",5,"maçãs","25 : 5",grp(5,5,"e","A quinta parte é dividir em 5 partes iguais."))
+ ]},
+{id:"flores",nome:"Flores",tema:"Dois passos",cor:"#F27BD0",luz:"Luz Lilás",x:95,y:205,rx:26,ry:32,quem:"👩‍🏫",
+ intro:"Nas Flores, as cascatas descem em dois saltos. Os problemas daqui também: primeiro dás um passo, depois dás outro. A professora Teresa mostra-te como.",
+ fim:"Atrás de uma cascata, entre as hortênsias, estava a Luz Lilás. Só falta uma!",
+ probs:[
+ {t:"Na biblioteca da escola da Mariana há uma estante com 24 livros na prateleira de cima, 20 livros na prateleira do meio e 18 livros na prateleira de baixo. Quantos livros estão, ao todo, na estante?",s:[
+  {q:"Primeiro: quantos livros há nas duas prateleiras de cima?",a:44,u:"livros",e:"24 + 20",h:pw(44,[24,20],"w")},
+  {q:"Agora junta a prateleira de baixo. Quantos livros há ao todo?",a:62,u:"livros",e:"44 + 18",h:pw(62,[44,18],"w")}]},
+ {t:"Num autocarro viajavam 13 passageiros. Na primeira paragem entraram 15 passageiros. Na segunda paragem saíram 7. Quantos passageiros viajam ainda no autocarro?",s:[
+  {q:"Primeiro: quantos passageiros ficaram depois da primeira paragem?",a:28,u:"passageiros",e:"13 + 15",h:pw(28,[13,15],"w")},
+  {q:"Agora: quantos ficaram depois de saírem 7?",a:21,u:"passageiros",e:"28 − 7",h:pw(28,[7,21],1)}]},
+ {t:"O Adriano tinha 28 cromos. Ao fim da tarde, o pai deu-lhe 30 cromos. Em seguida, o Adriano deu 14 cromos ao primo. Quantos cromos tem agora o Adriano?",s:[
+  {q:"Primeiro: com quantos cromos ficou depois de o pai lhe dar 30?",a:58,u:"cromos",e:"28 + 30",h:pw(58,[28,30],"w")},
+  {q:"Agora: com quantos ficou depois de dar 14 ao primo?",a:44,u:"cromos",e:"58 − 14",h:pw(58,[14,44],1)}]},
+ {t:"A Joana tinha 8 elásticos de cor. A tia ofereceu-lhe o dobro do número de elásticos que ela tinha. Com quantos elásticos ficou a Joana, no total?",s:[
+  {q:"Primeiro: quantos elásticos lhe deu a tia?",a:16,u:"elásticos",e:"2 × 8",h:grp(2,8,"t","O dobro é 2 vezes.")},
+  {q:"Agora: com quantos elásticos ficou a Joana no total?",a:24,u:"elásticos",e:"8 + 16",h:pw(24,[8,16],"w")}]},
+ {t:"A Joana tem 12 peixinhos no aquário. A irmã tem metade do número de peixinhos da Joana. Quantos peixinhos têm as duas irmãs, no total?",s:[
+  {q:"Primeiro: quantos peixinhos tem a irmã da Joana?",a:6,u:"peixinhos",e:"12 : 2",h:grp(2,6,"e","A metade é dividir em 2 partes iguais.")},
+  {q:"Agora: quantos peixinhos têm as duas no total?",a:18,u:"peixinhos",e:"12 + 6",h:pw(18,[12,6],"w")}]},
+ {t:"A professora Teresa tem 2 caixas com 8 marcadores em cada uma. Ela também tem um estojo com 30 marcadores. Quantos marcadores tem a professora Teresa?",s:[
+  {q:"Primeiro: quantos marcadores estão nas 2 caixas?",a:16,u:"marcadores",e:"2 × 8",h:grp(2,8,"t")},
+  {q:"Agora junta o estojo. Quantos marcadores tem ao todo?",a:46,u:"marcadores",e:"16 + 30",h:pw(46,[16,30],"w")}]},
+ {t:"A Filipa tem 45 lápis de cor. A Joana tem mais 20 lápis do que a Filipa. Quantos lápis de cor têm as duas amigas ao todo?",s:[
+  {q:"Primeiro: quantos lápis tem a Joana?",a:65,u:"lápis",e:"45 + 20",h:cmp("Filipa",45,"Joana",65,"v2")},
+  {q:"Agora: quantos lápis têm as duas ao todo?",a:110,u:"lápis",e:"45 + 65",h:pw(110,[45,65],"w")}]},
+ {t:"O João tinha 50 berlindes. Deu 6 berlindes a cada um dos seus 2 primos. Guardou os restantes. Quantos berlindes guardou o João?",s:[
+  {q:"Primeiro: quantos berlindes deu o João aos primos?",a:12,u:"berlindes",e:"2 × 6",h:grp(2,6,"t")},
+  {q:"Agora: quantos berlindes guardou?",a:38,u:"berlindes",e:"50 − 12",h:pw(50,[12,38],1)}]},
+ {t:"A professora Clara colocou 5 lápis em cada uma de 6 caixas. Mais tarde, juntou todos os lápis e distribuiu-os igualmente por 3 sacos. Quantos lápis ficaram em cada saco?",s:[
+  {q:"Primeiro: quantos lápis há ao todo nas 6 caixas?",a:30,u:"lápis",e:"6 × 5",h:grp(6,5,"t")},
+  {q:"Agora: quantos lápis ficam em cada um dos 3 sacos?",a:10,u:"lápis",e:"30 : 3",h:grp(3,10,"e")}]}
+ ]},
+{id:"corvo",nome:"Corvo",tema:"Medir, pesar e pagar",cor:"#22C7B8",luz:"Luz Turquesa",x:125,y:95,rx:18,ry:20,quem:"👵",
+ intro:"O Corvo é a ilha mais pequenina! No mercado da avó Luísa mede-se, pesa-se e paga-se em euros. Aqui está a última luz!",
+ fim:"A avó Luísa guardava a Luz Turquesa na balança do mercado. Já tens as nove luzes. Corre para o farol!",
+ probs:[
+ P("A casa da Mariana tem 12 metros de altura. A casa da Joana é 5 metros mais baixa. Qual é a altura, em metros, da casa da Joana?",7,"metros","12 − 5",cmp("Casa da Joana",7,"Casa da Mariana",12,"v1")),
+ P("A mãe da Catarina comprou um par de botas por 30 euros. Para pagar, ela entregou 40 euros. Quanto recebeu de troco?",10,"euros","40 − 30",pw(40,[30,10],1)),
+ P("A Maria quer comprar um relógio que custa 18 euros. Ela já tem 6 euros no mealheiro. Quantos euros faltam à Maria para comprar o relógio?",12,"euros","18 − 6",pw(18,[6,12],1)),
+ P("Um aquário tem capacidade para 40 litros de água. A água do aquário dá para encher 5 baldes iguais. Qual é a capacidade de cada balde, em litros?",8,"litros","40 : 5",grp(5,8,"e")),
+ {t:"A dona Luísa tem três caixas: A, B e C. A caixa A é mais pesada do que a caixa B, mas é mais leve do que a caixa C. Qual é a caixa mais pesada?",s:[
+  {o:["Caixa A","Caixa B","Caixa C"],a:2,e:"A caixa C é a mais pesada",h:{k:"txt",t:"Põe as caixas por ordem, da mais leve para a mais pesada: B, depois A, depois C."}}]},
+ P("Um garrafão contém 18 litros de sumo. Um jarro tem capacidade para 2 litros. Quantos jarros se podem encher com o sumo do garrafão?",9,"jarros","18 : 2",grp(9,2,"n")),
+ P("O David é 8 quilogramas mais pesado do que a Maria. A massa da Maria é 22 quilogramas. Qual é a massa, em quilogramas, do David?",30,"quilogramas","22 + 8",cmp("Maria",22,"David",30,"v2")),
+ P("Uma corda foi cortada em dois pedaços. O primeiro pedaço tem 65 centímetros. O segundo pedaço é 25 centímetros mais comprido do que o primeiro. Qual é o comprimento, em centímetros, do segundo pedaço?",90,"centímetros","65 + 25",cmp("1.º pedaço",65,"2.º pedaço",90,"v2")),
+ {t:"Uma planta tem 40 centímetros de altura. Ela cresce 5 centímetros em cada dia. Quantos dias terão de passar para a planta chegar aos 60 centímetros?",s:[
+  {q:"Primeiro: quantos centímetros faltam à planta para chegar aos 60?",a:20,u:"centímetros",e:"60 − 40",h:pw(60,[40,20],1)},
+  {q:"Agora: em quantos dias cresce 20 centímetros, se cresce 5 por dia?",a:4,u:"dias",e:"20 : 5",h:grp(4,5,"n")}]},
+ {t:"O Leandro tem 18 euros. Ele quer ir ao cinema. O bilhete custa 9 euros e o pacote de pipocas custa 4 euros. Será que ainda tem dinheiro para uma bebida que custa 3 euros?",s:[
+  {q:"Primeiro: quanto gasta no bilhete e nas pipocas?",a:13,u:"euros",e:"9 + 4",h:pw(13,[9,4],"w")},
+  {q:"Agora: quanto dinheiro lhe sobra?",a:5,u:"euros",e:"18 − 13",h:pw(18,[13,5],1)},
+  {q:"Sobram 5 euros. Chega para a bebida de 3 euros?",o:["Sim, chega","Não chega"],a:0,e:"Sim! 5 euros é mais do que 3 euros",h:{k:"txt",t:"Compara: 5 é maior ou menor do que 3?"}}]},
+ {t:"O senhor Fernando tinha 100 euros. Comprou um casaco que custou 25 euros e um par de sapatos que custou 48 euros. Quanto dinheiro restou ao senhor Fernando?",s:[
+  {q:"Primeiro: quanto gastou ao todo?",a:73,u:"euros",e:"25 + 48",h:pw(73,[25,48],"w")},
+  {q:"Agora: quanto dinheiro lhe restou?",a:27,u:"euros",e:"100 − 73",h:pw(100,[73,27],1)}]}
+ ]}
+];
+const HISTORIA=[
+ {f:"🌩️",t:"Numa noite de grande tempestade, o vento Trapalhão soprou com tanta força que apagou o Farol das Nove Luzes."},
+ {f:"✨",t:"As nove luzes mágicas voaram pelo céu e caíram no mar. Foi parar uma a cada ilha dos Açores!"},
+ {f:"⛵",t:"Sem o farol, os barcos não encontram o caminho para casa. Os pescadores estão preocupados."},
+ {f:"milo",t:"Olá! Eu sou o Milo, o milhafre. Vi tudo lá de cima! Em cada ilha há amigos que precisam de ajuda para resolver problemas. Quem os ajudar, recebe uma luz."},
+ {f:"eu",t:"Vens comigo? Vamos de ilha em ilha, juntamos as nove luzes e acendemos de novo o farol!"}
+];
+
+/* ============ ESTADO ============ */
+const CHAVE="farol9luzes_v1";
+let D={jogadores:[],som:true,lerSempre:false};
+let mem=null;
+function carregar(){try{const s=localStorage.getItem(CHAVE);if(s)D=Object.assign(D,JSON.parse(s))}catch(e){if(mem)D=mem}}
+function guardar(){mem=D;try{localStorage.setItem(CHAVE,JSON.stringify(D))}catch(e){}}
+let J=null;          // jogador ativo
+let V={ecra:"jogadores"}; // estado da vista
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rnd=n=>Math.floor(Math.random()*n);
+const baralha=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const nivelDe=xp=>{let n=0;NIVEIS.forEach((v,i)=>{if(xp>=v[0])n=i});return n};
+const luzes=j=>ILHAS.filter(i=>j.ilhas[i.id]).length;
+const estrelas=j=>ILHAS.reduce((s,i)=>s+(j.ilhas[i.id]||0),0);
+
+/* ============ VOZ E SOM ============ */
+function ler(txt){
+  if(!("speechSynthesis" in window)){aviso("Este aparelho não consegue ler em voz alta.");return}
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(txt.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}🔊]/gu,"").replace(/×/g," vezes ").replace(/−/g," menos ").replace(/ : /g," a dividir por ").replace(/\?/g,"? "));
+    u.lang="pt-PT";u.rate=.88;
+    const vs=speechSynthesis.getVoices();
+    const v=vs.find(v=>/pt[-_]PT/i.test(v.lang))||vs.find(v=>/^pt/i.test(v.lang));
+    if(v)u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function calar(){try{speechSynthesis.cancel()}catch(e){}}
+let AC=null;
+function som(tipo){
+  if(!D.som)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const notas={bem:[523,659,784],mal:[220,196],clique:[440],festa:[523,659,784,1047,1319]}[tipo]||[440];
+    notas.forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=tipo==="mal"?"triangle":"sine";o.frequency.value=f;
+      const t=AC.currentTime+i*.11;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.18,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.22);
+      o.connect(g).connect(AC.destination);o.start(t);o.stop(t+.25)});
+  }catch(e){}
+}
+function aviso(t){const d=document.createElement("div");d.className="aviso";d.setAttribute("role","status");d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}
+function festa(n=14){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  for(let i=0;i<n;i++){const s=document.createElement("span");s.className="conf";s.textContent=["⭐","🐚","✨","🌟"][i%4];s.style.left=rnd(96)+"vw";s.style.animationDelay=(i*.05)+"s";document.body.appendChild(s);setTimeout(()=>s.remove(),2400)}}
+
+/* ============ DESENHOS ============ */
+function avatarSVG(a,humor="feliz"){
+  const p=PELE[a.pele],c=CABELO[a.corCabelo],r=ROUPA[a.roupa];let s="";
+  if(a.cabelo===1)s+=`<path d="M27 58 Q24 22 60 22 Q96 22 93 58 L96 104 Q60 112 24 104Z" fill="${c}"/>`;
+  if(a.cabelo===4)s+=`<path d="M86 40 Q112 44 104 84 Q98 70 88 62Z" fill="${c}"/>`;
+  if(a.cabelo===3)s+=`<circle cx="26" cy="36" r="13" fill="${c}"/><circle cx="94" cy="36" r="13" fill="${c}"/>`;
+  s+=`<path d="M22 140 Q22 100 60 100 Q98 100 98 140Z" fill="${r}"/><rect x="52" y="84" width="16" height="20" rx="6" fill="${p}"/>`;
+  s+=`<circle cx="60" cy="58" r="31" fill="${p}"/><circle cx="29" cy="60" r="5" fill="${p}"/><circle cx="91" cy="60" r="5" fill="${p}"/>`;
+  if(a.cabelo===5)s+=`<path d="M30 52 Q32 26 60 26 Q88 26 90 52 Q76 36 60 36 Q44 36 30 52Z" fill="${c}" opacity=".45"/>`;
+  else if(a.cabelo===2){for(const [x,y] of [[34,40],[44,29],[60,25],[76,29],[86,40],[30,52],[90,52]])s+=`<circle cx="${x}" cy="${y}" r="11" fill="${c}"/>`}
+  else s+=`<path d="M28 58 Q26 24 60 24 Q94 24 92 58 Q84 40 60 42 Q38 40 28 58Z" fill="${c}"/>`;
+  s+=`<circle cx="42" cy="70" r="6" fill="#ff8fa3" opacity=".45"/><circle cx="78" cy="70" r="6" fill="#ff8fa3" opacity=".45"/>`;
+  if(a.oculos==="oculos")s+=`<rect x="36" y="51" width="20" height="13" rx="5" fill="#222"/><rect x="64" y="51" width="20" height="13" rx="5" fill="#222"/><path d="M56 56h8" stroke="#222" stroke-width="3"/>`;
+  else if(humor==="festa")s+=`<path d="M43 60 q5 -8 10 0 M67 60 q5 -8 10 0" stroke="#25303B" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  else s+=`<circle cx="48" cy="58" r="4" fill="#25303B"/><circle cx="72" cy="58" r="4" fill="#25303B"/><circle cx="49.5" cy="56.5" r="1.3" fill="#fff"/><circle cx="73.5" cy="56.5" r="1.3" fill="#fff"/>`;
+  if(humor==="pensa")s+=`<path d="M52 77 h14" stroke="#7a2e2e" stroke-width="3.5" stroke-linecap="round"/>`;
+  else if(humor==="festa")s+=`<path d="M48 72 Q60 90 72 72Z" fill="#7a2e2e"/>`;
+  else s+=`<path d="M49 73 Q60 83 71 73" stroke="#7a2e2e" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  if(a.chapeu==="bone")s+=`<path d="M30 42 Q32 16 60 16 Q88 16 90 42Z" fill="#E8603C"/><path d="M84 38 Q108 36 110 46 L86 44Z" fill="#b8431f"/>`;
+  if(a.chapeu==="palha")s+=`<ellipse cx="60" cy="38" rx="46" ry="9" fill="#E9C46A"/><path d="M36 38 Q38 12 60 12 Q82 12 84 38Z" fill="#F0D58C"/><path d="M37 33 h46" stroke="#EF6FA8" stroke-width="5"/>`;
+  if(a.chapeu==="pirata")s+=`<path d="M16 42 Q30 4 60 10 Q90 4 104 42 Q60 30 16 42Z" fill="#222"/><circle cx="60" cy="25" r="6" fill="#fff"/>`;
+  if(a.chapeu==="coroa")s+=`<path d="M34 38 L30 12 L46 26 L60 8 L74 26 L90 12 L86 38Z" fill="#FFC83D" stroke="#E09A00" stroke-width="2"/><circle cx="60" cy="28" r="4" fill="#EF6FA8"/>`;
+  const am=LOJA.find(l=>l.id===a.amigo);
+  if(am)s+=`<text x="92" y="136" font-size="30" text-anchor="middle">${am.e}</text>`;
+  return `<svg viewBox="0 0 120 140" role="img" aria-label="O teu explorador">${s}</svg>`;
+}
+const MILO=`<svg viewBox="0 0 120 120" role="img" aria-label="Milo, o milhafre"><ellipse cx="60" cy="74" rx="32" ry="34" fill="#8B5A2B"/><ellipse cx="60" cy="82" rx="20" ry="22" fill="#E8C99B"/><path d="M28 70 Q6 60 12 96 Q26 92 34 82Z" fill="#6B4320"/><path d="M92 70 Q114 60 108 96 Q94 92 86 82Z" fill="#6B4320"/><circle cx="60" cy="40" r="24" fill="#8B5A2B"/><circle cx="50" cy="38" r="8" fill="#fff"/><circle cx="70" cy="38" r="8" fill="#fff"/><circle cx="51" cy="39" r="4" fill="#25303B"/><circle cx="69" cy="39" r="4" fill="#25303B"/><path d="M54 48 L66 48 L60 60Z" fill="#FFC83D"/><path d="M48 108 v8 M72 108 v8" stroke="#FFC83D" stroke-width="5" stroke-linecap="round"/></svg>`;
+
+/* ============ MODELO DE BARRAS ============ */
+function modelo(h){
+  if(!h)return"";
+  const Q=`<span class="q">?</span>`;
+  if(h.k==="txt")return `<p>${esc(h.t)}</p>`;
+  if(h.k==="pw"){
+    return `<div class="mb"><div class="todo ${h.x==="w"?"q":""}">${h.x==="w"?"?":h.w}</div><div class="partes">${h.p.map((v,i)=>`<span class="${h.x===i?"q":""}" style="flex:${Math.max(v,h.w*.14)}">${h.x===i?"?":v}</span>`).join("")}</div><small>A barra de cima é o todo. As de baixo são as partes.</small></div>`;
+  }
+  if(h.k==="cmp"){
+    const m=h.v2,d=h.v2-h.v1,f=v=>Math.max(v/m*100,16);
+    return `<div class="mb"><div class="cmp"><span>${esc(h.n1)}</span><div class="b"><span class="${h.x==="v1"?"q":""}" style="width:${f(h.v1)}%">${h.x==="v1"?"?":h.v1}</span><span class="dif ${h.x==="d"?"q":""}" style="flex:1">${h.x==="d"?"?":d}</span></div><span>${esc(h.n2)}</span><div class="b"><span class="${h.x==="v2"?"q":""}" style="width:100%">${h.x==="v2"?"?":h.v2}</span></div></div><small>A parte tracejada mostra a diferença entre os dois.</small></div>`;
+  }
+  if(h.k==="grp"){
+    const t=h.n*h.e;let caixas="";
+    if(h.x==="n")caixas=`<span>${h.e}</span><span>${h.e}</span><span style="background:none">…</span>`;
+    else for(let i=0;i<h.n;i++)caixas+=`<span class="${h.x==="e"?"q":""}" style="flex:1">${h.x==="e"?"?":h.e}</span>`;
+    const leg=h.x==="t"?`${h.n} grupos de ${h.e}. Quanto é ao todo?`:h.x==="e"?`${t} repartidos por ${h.n} grupos iguais. Quanto fica em cada grupo?`:`Quantos grupos de ${h.e} cabem em ${t}?`;
+    return `<div class="mb">${h.tip?`<p style="font-family:Andika;font-weight:700;margin:0 0 .3rem">${esc(h.tip)}</p>`:""}<div class="todo ${h.x==="t"?"q":""}">${h.x==="t"?"?":t}</div><div class="partes">${caixas}</div><small>${leg}</small></div>`;
+  }
+  return"";
+}
+function grafico(g){const mx=Math.max(...g.d.map(d=>d[1]));
+  return `<p style="margin:0;font-weight:700">${esc(g.tit)}</p><div class="graf" role="img" aria-label="${esc(g.tit)}: ${g.d.map(d=>d[0]+" "+d[1]).join(", ")}">${g.d.map(d=>`<div style="height:${d[1]/mx*100}%">${d[1]}<em>${esc(d[0])}</em></div>`).join("")}</div>`}
+
+/* ============ PROGRESSO ============ */
+function ganha(xp,conchas){
+  const antes=nivelDe(J.xp);J.xp+=xp;J.conchas+=conchas;
+  const dep=nivelDe(J.xp);
+  if(dep>antes){setTimeout(()=>{aviso("Subiste de nível! Agora és "+NIVEIS[dep][1]+"!");som("festa");festa()},600)}
+  guardar();
+}
+function cracha(id){if(J.crachas.includes(id))return;J.crachas.push(id);const c=CRACHAS.find(c=>c.id===id);
+  setTimeout(()=>aviso("Novo crachá: "+c.e+" "+c.n),1400);guardar()}
+function verificaCrachas(){const l=luzes(J),e=estrelas(J);
+  if(l>=1)cracha("luz1");if(l>=3)cracha("luz3");if(l>=6)cracha("luz6");if(l>=9)cracha("luz9");
+  if(Object.values(J.ilhas).includes(3))cracha("tres");if(e>=15)cracha("est15");if(e>=27)cracha("est27")}
+
+/* ============ ECRÃS ============ */
+function topo(){
+  if(!J)return"";const n=nivelDe(J.xp),a=NIVEIS[n][0],b=NIVEIS[n+1]?NIVEIS[n+1][0]:a+1;
+  const pc=NIVEIS[n+1]?Math.round((J.xp-a)/(b-a)*100):100;
+  return `<div class="topo"><div class="quem">${avatarSVG(J.av)}<div style="min-width:0"><div class="nome">${esc(J.nome)}</div><div class="niv">Nível ${n+1}: ${NIVEIS[n][1]}</div><div class="xp" title="Pontos de experiência"><i style="width:${pc}%"></i></div></div></div>
+  <span class="conchas" title="Conchas">🐚 ${J.conchas}</span>
+  <button class="ico ${D.lerSempre?"":"off"}" data-a="lerSempre" title="Ler sempre em voz alta" aria-pressed="${D.lerSempre}" aria-label="Ler sempre em voz alta">🗣️</button>
+  <button class="ico ${D.som?"":"off"}" data-a="som" title="Sons" aria-pressed="${D.som}" aria-label="Sons">🔔</button>
+  <button class="ico" data-a="ir" data-v="mapa" title="Mapa" aria-label="Voltar ao mapa">🗺️</button>
+  <button class="ico" data-a="sair" title="Trocar de jogador" aria-label="Trocar de jogador">👥</button></div>`;
+}
+const ouvir=(alvo,txt="Ouvir")=>`<button class="ouvir" data-a="ler" data-v="${alvo}">🔊 ${txt}</button>`;
+
+const E={};
+E.jogadores=()=>{
+  const lista=D.jogadores.map(j=>`<button class="jog" data-a="entrar" data-v="${j.id}">${avatarSVG(j.av)}<b>${esc(j.nome)}</b><small>${NIVEIS[nivelDe(j.xp)][1]} · ${luzes(j)} de 9 luzes</small></button>`).join("");
+  const prof=D.jogadores.length?`<table><tr><th>Nome</th><th>Luzes</th><th>Estrelas</th><th>Pontos</th><th></th></tr>${D.jogadores.map(j=>`<tr><td>${esc(j.nome)}</td><td>${luzes(j)}/9</td><td>${estrelas(j)}/27</td><td>${j.xp}</td><td>${V.apagar===j.id?`<button class="btn peq" data-a="apagarSim" data-v="${j.id}">Apagar mesmo</button> <button class="btn peq branco" data-a="apagarNao">Cancelar</button>`:`<button class="btn peq branco" data-a="apagar" data-v="${j.id}">Apagar</button>`}</td></tr>`).join("")}</table>`:"<p>Ainda não há jogadores.</p>";
+  return `<div class="folha centro"><div style="width:110px;margin:0 auto">${MILO}</div>
+  <h1>O Farol das Nove Luzes</h1><p id="bemvindo">Uma aventura de problemas pelas nove ilhas dos Açores.</p>
+  ${lista?`<h2 class="esp">Quem vai jogar?</h2><div class="jogadores">${lista}</div>`:""}
+  <div class="esp"><button class="btn verde" data-a="ir" data-v="novo">➕ Novo jogador</button></div>
+  <details ${V.apagar?"open":""}><summary>Para o professor</summary><div style="text-align:left">
+  <p>O progresso fica guardado neste aparelho e neste navegador. Não é enviado para lado nenhum. Se a turma partilhar o aparelho, cada aluno cria o seu jogador.</p>${prof}</div></details></div>`;
+};
+E.novo=()=>`<div class="folha centro"><h2 id="tnome">Como te chamas?</h2><p>Escreve o teu primeiro nome.</p>${ouvir("#tnome")}
+  <form data-f="nome" class="esp"><input type="text" id="nome" maxlength="14" autocomplete="off" aria-label="O teu nome" value="${esc(V.nome||"")}">
+  <p id="erroNome" style="color:var(--erro);font-weight:700;min-height:1.5rem">${V.erro||""}</p>
+  <div class="linha c"><button type="button" class="btn branco" data-a="ir" data-v="jogadores">Voltar</button><button class="btn">Criar o meu explorador</button></div></form></div>`;
+E.avatar=()=>{
+  const a=V.av,tem=id=>J&&J.tem.includes(id);
+  const cores=(k,arr)=>arr.map((c,i)=>`<button class="op cor ${a[k]===i?"sel":""}" style="background:${c}" data-a="av" data-k="${k}" data-v="${i}" aria-label="Cor ${i+1}" aria-pressed="${a[k]===i}"></button>`).join("");
+  const extras=t=>`<button class="op ${!a[t]?"sel":""}" data-a="av" data-k="${t}" data-v="">Nenhum</button>`+LOJA.filter(l=>l.t===t).map(l=>tem(l.id)?`<button class="op ${a[t]===l.id?"sel":""}" data-a="av" data-k="${t}" data-v="${l.id}" aria-label="${l.n}">${l.e}</button>`:`<span class="op fechado" title="${l.n}: troca por conchas no Baú">🔒 ${l.e}</span>`).join("");
+  return `${topo()}<div class="folha"><h2 id="tav">${J?"Muda o teu explorador":"Cria o teu explorador, "+esc(V.nome)+"!"}</h2>
+  <div class="cria esp"><div class="ver">${avatarSVG(a,"festa")}<div class="esp"><button class="btn verde" data-a="avOk">Está pronto!</button></div></div>
+  <div><h3>Pele</h3><div class="opc">${cores("pele",PELE)}</div>
+  <h3>Penteado</h3><div class="opc">${PENTEADOS.map((p,i)=>`<button class="op ${a.cabelo===i?"sel":""}" style="font-size:.95rem" data-a="av" data-k="cabelo" data-v="${i}" aria-pressed="${a.cabelo===i}">${p}</button>`).join("")}</div>
+  <h3>Cor do cabelo</h3><div class="opc">${cores("corCabelo",CABELO)}</div>
+  <h3>Camisola</h3><div class="opc">${cores("roupa",ROUPA)}</div>
+  <h3>Chapéu</h3><div class="opc">${extras("chapeu")}</div>
+  <h3>Óculos</h3><div class="opc">${extras("oculos")}</div>
+  <h3>Amigo de viagem</h3><div class="opc">${extras("amigo")}</div>
+  ${J?"":`<p style="font-size:.85rem">Os chapéus e os amigos com cadeado ganham-se durante a aventura, com conchas 🐚.</p>`}</div></div></div>`;
+};
+E.historia=()=>{const c=HISTORIA[V.cena],ult=V.cena===HISTORIA.length-1;
+  const fig=c.f==="milo"?MILO:c.f==="eu"?`<div style="display:flex;justify-content:center">${MILO}</div>`:c.f;
+  return `${topo()}<div class="folha"><div class="cena"><div class="fig">${fig}</div><div><p id="cena">${esc(c.t)}</p>${ouvir("#cena")}</div></div>
+  <div class="linha c esp">${V.cena?`<button class="btn branco" data-a="cena" data-v="-1">Para trás</button>`:""}<button class="btn" data-a="cena" data-v="1">${ult?"Vamos à aventura!":"Continuar"}</button></div>
+  <p class="centro" style="font-size:.8rem">${V.cena+1} de ${HISTORIA.length}</p></div>`};
+
+E.mapa=()=>{
+  const feitas=luzes(J),prox=Math.min(feitas,8);
+  const pts=ILHAS.map(i=>`${i.x},${i.y}`).join(" ");
+  const ilhas=ILHAS.map((i,n)=>{const ab=n<=feitas,st=J.ilhas[i.id]||0;
+    const pico=i.id==="pico"?`<path d="M${i.x-22} ${i.y-4} L${i.x} ${i.y-50} L${i.x+22} ${i.y-4}Z" fill="${ab?"#6f8f6a":"#9bb0b8"}"/><path d="M${i.x-7} ${i.y-36} L${i.x} ${i.y-50} L${i.x+7} ${i.y-36}Z" fill="#fff"/>`:"";
+    return `<g class="ilha" data-a="ilha" data-v="${n}" tabindex="0" role="button" aria-label="${i.nome}: ${i.tema}${ab?"":" (fechada)"}">
+    ${n===prox&&feitas<9?`<ellipse class="pulsa" cx="${i.x}" cy="${i.y}" rx="${i.rx+14}" ry="${i.ry+12}" fill="none" stroke="#FFC83D" stroke-width="5"/>`:""}
+    <ellipse class="terra" cx="${i.x}" cy="${i.y}" rx="${i.rx}" ry="${i.ry}" fill="${ab?"#58B368":"#8FA9B5"}" stroke="${ab?"#F4E4B4":"#b9c9cf"}" stroke-width="6"/>
+    <ellipse cx="${i.x-i.rx*.25}" cy="${i.y-i.ry*.2}" rx="${i.rx*.4}" ry="${i.ry*.4}" fill="${ab?"#7CCB86":"#a3b9c2"}"/>${pico}
+    <circle cx="${i.x}" cy="${i.y}" r="15" fill="${st?i.cor:ab?"#fff":"#dfe7ea"}" stroke="#25303B" stroke-width="3"/>
+    <text x="${i.x}" y="${i.y+6}" text-anchor="middle" font-size="17" fill="#25303B">${ab?n+1:"🔒"}</text>
+    <text x="${i.x}" y="${i.y+i.ry+26}" text-anchor="middle" font-size="21" fill="#fff" stroke="#0F5C7A" stroke-width="4" paint-order="stroke">${i.nome}</text>
+    ${st?`<text x="${i.x}" y="${i.y+i.ry+46}" text-anchor="middle" font-size="16" fill="#FFC83D">${"★".repeat(st)}${"☆".repeat(3-st)}</text>`:""}</g>`}).join("");
+  const b=ILHAS[prox];
+  const lamp=ILHAS.map((i,n)=>`<circle cx="${640+n*22}" cy="52" r="8" fill="${J.ilhas[i.id]?i.cor:"#0F5C7A"}" stroke="#fff" stroke-width="2"/>`).join("");
+  const farol=`<g ${feitas>=9?'class="ilha" data-a="ir" data-v="final" tabindex="0" role="button" aria-label="Farol: acender"':""}><ellipse cx="730" cy="150" rx="46" ry="14" fill="#6b7780"/>${feitas>=9?`<circle cx="730" cy="84" r="34" fill="#FFC83D" opacity=".45" class="pulsa"/>`:""}<path d="M716 146 L722 92 L738 92 L744 146Z" fill="#fff"/><path d="M718 128 h24 M720 110 h20" stroke="#D8483F" stroke-width="9"/><rect x="718" y="78" width="24" height="14" fill="${feitas>=9?"#FFC83D":"#25303B"}"/><path d="M714 78 L730 64 L746 78Z" fill="#D8483F"/>
+    <text x="730" y="30" text-anchor="middle" font-size="19" fill="#fff" font-family="Baloo 2" font-weight="800">Farol das Nove Luzes</text>${lamp}</g>`;
+  const lista=ILHAS.map((i,n)=>{const ab=n<=feitas,st=J.ilhas[i.id]||0;
+    return `<button class="mis ${ab?"":"fech"} ${n===prox&&feitas<9?"agora":""}" data-a="ilha" data-v="${n}"><span class="n" style="background:${ab?"var(--pasto2)":"#8FA9B5"}">${ab?n+1:"🔒"}</span><span><b>${i.nome}</b><small>${i.tema}${st?" · "+"★".repeat(st)+"☆".repeat(3-st):""}</small></span></button>`}).join("");
+  return `${topo()}
+  <div class="mapa"><svg viewBox="0 0 1000 540" aria-label="Mapa dos Açores">
+   <path d="M60 300 q20 -10 40 0 t40 0 M560 470 q20 -10 40 0 t40 0 M250 120 q20 -10 40 0 t40 0 M840 250 q20 -10 40 0 t40 0 M200 430 q20 -10 40 0 t40 0" stroke="rgba(255,255,255,.35)" stroke-width="4" fill="none" stroke-linecap="round"/>
+   <polyline points="${pts}" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="4 12" stroke-linecap="round" opacity=".7"/>
+   ${farol}${ilhas}
+   <g transform="translate(${b.x+b.rx+6},${b.y-52})"><g transform="scale(.42)">${avatarSVG(J.av).replace(/<\/?svg[^>]*>/g,"")}</g><path d="M-6 56 h62 l-10 16 h-42Z" fill="#8B5A2B" stroke="#fff" stroke-width="2"/></g>
+  </svg></div>
+  <p class="claro centro" id="dica" style="font-weight:700;margin:.6rem 0 0">${feitas>=9?"Tens as nove luzes! Toca no farol para o acender.":feitas?`Já tens ${feitas} ${feitas===1?"luz":"luzes"}. A próxima está em ${b.nome}!`:"A aventura começa em Santa Maria. Toca na ilha!"} ${ouvir("#dica")}</p>
+  ${feitas>=9?`<div class="centro esp"><button class="btn" data-a="ir" data-v="final">🗼 Acender o farol</button></div>`:""}
+  <div class="missoes">${lista}</div>
+  <div class="menu"><button class="btn azul" data-a="ir" data-v="desafios">🎲 Desafios</button><button class="btn branco" data-a="ir" data-v="bau">🎁 Baú de prémios</button><button class="btn branco" data-a="ir" data-v="crachas">🏅 Crachás</button><button class="btn branco" data-a="editarAv">🧑‍🎨 O meu explorador</button></div>`;
+};
+E.ilha=()=>{const i=ILHAS[V.i],st=J.ilhas[i.id];
+  return `${topo()}<div class="folha"><div class="cena"><div class="fig">${i.quem}</div><div><p class="passo">Ilha ${V.i+1} · ${i.tema}</p><h2>${i.nome}</h2><p id="intro">${esc(i.intro)}</p>${ouvir("#intro")}</div></div>
+  <p class="centro esp">São 6 problemas. Se acertares à primeira, ganhas mais estrelas! ${st?`<br>O teu melhor resultado: ${"⭐".repeat(st)}`:""}</p>
+  <div class="linha c esp"><button class="btn branco" data-a="ir" data-v="mapa">Voltar ao mapa</button><button class="btn verde" data-a="comecar">${st?"Jogar outra vez":"Começar a missão"}</button></div></div>`};
+
+/* ----- motor dos problemas ----- */
+function iniciar(titulo,probs,fim,extra={}){
+  V=Object.assign({ecra:"jogo",titulo,probs,fim,n:0,passo:0,tent:0,txt:"",estado:"",dica:false,primeira:0,marcas:[]},extra);
+  desenha();autoLer();
+}
+function autoLer(){if(D.lerSempre&&V.ecra==="jogo"){const p=V.probs[V.n],s=p.s[V.passo];setTimeout(()=>ler((V.passo?"":p.t+" ")+(s.q||"")),350)}}
+E.jogo=()=>{
+  const p=V.probs[V.n],s=p.s[V.passo],multi=p.s.length>1;
+  const prog=V.probs.map((_,k)=>`<i class="${k<V.n?(V.marcas[k]?"ok":"meio"):k===V.n?"at":""}"></i>`).join("");
+  const frases=p.t.match(/[^.?!]+[.?!]+/g)||[p.t];
+  const feitos=p.s.slice(0,V.passo).map((x,k)=>x.o?"":`<div class="feito">${k+1}.º passo: ${x.e} = ${x.a} ${x.u||""}</div>`).join("");
+  let fala="";
+  if(V.estado==="bem")fala=`<div class="fala bem" id="fb">${avatarSVG(J.av,"festa")}<span>${V.msg} ${s.o?esc(s.e)+".":`${s.e} = ${s.a} ${s.u||""}.`}</span></div>`;
+  else if(V.estado==="mostra")fala=`<div class="fala dica" id="fb"><b>Vamos ver juntos:</b> ${s.o?esc(s.e)+".":`${s.e} = ${s.a} ${s.u||""}.`} ${modelo(resolvido(s.h))}</div>`;
+  else if(V.estado==="mal")fala=`<div class="fala mal" id="fb">${avatarSVG(J.av,"pensa")}<span>${V.msg}</span></div>`;
+  const dica=(V.dica&&V.estado!=="mostra"&&V.estado!=="bem")?`<div class="fala dica" id="dica"><div class="linha"><div style="width:48px">${MILO}</div><b>O Milo ajuda com um desenho:</b></div>${modelo(s.h)}</div>`:"";
+  const fim=V.estado==="bem"||V.estado==="mostra";
+  let entrada;
+  if(fim)entrada=`<div class="centro"><button class="btn verde" data-a="seguinte" id="seg">${(V.passo<p.s.length-1)?"Próximo passo":(V.n<V.probs.length-1?"Próximo problema":"Terminar")}</button></div>`;
+  else if(s.o)entrada=`<div class="escolhas">${s.o.map((o,k)=>`<button class="btn branco" data-a="escolhe" data-v="${k}">${esc(o)}</button>`).join("")}</div>`;
+  else entrada=`<div class="resp"><span>Resposta:</span><span class="visor ${V.estado==="mal"?"mal":""}" id="visor" aria-live="polite">${V.txt||"&nbsp;"}</span><span>${esc(s.u||"")}</span></div>
+   <div class="teclas">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="tecla" data-a="tecla" data-v="${n}">${n}</button>`).join("")}<button class="tecla" data-a="tecla" data-v="x" aria-label="Apagar">⌫</button><button class="tecla" data-a="tecla" data-v="0">0</button><button class="tecla" style="background:var(--pasto);color:#fff;box-shadow:0 5px 0 var(--pasto2)" data-a="verifica" aria-label="Verificar">✔</button></div>`;
+  return `${topo()}<div class="linha" style="justify-content:space-between;margin-bottom:.5rem"><h3 class="claro">${esc(V.titulo)}</h3><div class="prog" aria-label="Problema ${V.n+1} de ${V.probs.length}">${prog}</div></div>
+  <div class="folha"><div class="prob"><div>
+   <div class="enun" id="enun">${frases.map(f=>`<span class="frase">${esc(f.trim())}</span>`).join("")}</div>
+   ${p.fig?grafico(p.fig):""}
+   ${feitos}
+   ${s.q?`<div class="perg" id="perg">${multi?`<span class="passo">${V.passo+1}.º passo</span><br>`:""}${esc(s.q)}</div>`:""}
+   <div class="linha">${ouvir(s.q?"#enun,#perg":"#enun","Ouvir o problema")}${fim?"":`<button class="ouvir" data-a="dica" aria-expanded="${V.dica}">💡 ${V.dica?"Esconder a ajuda":"Preciso de ajuda"}</button>`}</div>
+   ${dica}${fala}
+  </div><div class="painel">${entrada}</div></div></div>`;
+};
+function resolvido(h){return h&&h.k!=="txt"?Object.assign({},h,{x:"-"}):null}
+const BEM=["Muito bem!","Boa! Acertaste!","Fantástico!","Isso mesmo!","Que craque!"];
+function responde(certo){
+  const p=V.probs[V.n];
+  if(certo){V.estado="bem";V.msg=BEM[rnd(BEM.length)];som("bem");
+    if(V.passo===p.s.length-1){
+      const t=V.tent,xp=t===0?10:t===1?6:3,co=t===0?3:t===1?2:1;
+      V.marcas[V.n]=t===0;if(t===0){V.primeira++;J.serie=(J.serie||0)+1;if(J.serie>=5)cracha("cinco")}else J.serie=0;
+      ganha(xp,co);V.msg+=` +${co} 🐚`;if(t===0)festa(8);
+    }
+    if(D.lerSempre)ler(V.msg);
+  }else{V.tent++;V.txt="";som("mal");J.serie=0;
+    if(V.tent>=3){V.estado="mostra";if(V.passo===p.s.length-1){V.marcas[V.n]=false;ganha(1,0)}}
+    else{V.estado="mal";V.msg=V.tent===1?"Quase! Olha para o desenho do Milo e tenta outra vez.":"Ainda não é isso. Lê devagar e tenta mais uma vez.";V.dica=true;if(D.lerSempre)ler(V.msg)}
+  }
+  desenha();const f=$("#seg");if(f)f.focus();
+}
+function seguinte(){
+  const p=V.probs[V.n];calar();
+  if(V.passo<p.s.length-1){V.passo++;V.estado="";V.txt="";V.dica=false;desenha();autoLer();return}
+  if(V.n<V.probs.length-1){V.n++;V.passo=0;V.tent=0;V.estado="";V.txt="";V.dica=false;desenha();autoLer();return}
+  V.fim(V.primeira);
+}
+function fimIlha(pr){
+  const i=ILHAS[V.i],st=pr>=5?3:pr>=3?2:1,nova=!J.ilhas[i.id];
+  J.ilhas[i.id]=Math.max(J.ilhas[i.id]||0,st);
+  if(nova)ganha(20,10);else guardar();
+  verificaCrachas();som("festa");festa(20);
+  V={ecra:"resultado",i:V.i,st,nova,pr};desenha();
+}
+E.resultado=()=>{const i=ILHAS[V.i];
+  return `${topo()}<div class="folha centro"><h2>${V.nova?"Recuperaste a "+i.luz+"!":"Missão terminada!"}</h2>
+  <div class="luz" style="background:${i.cor}">💡</div>
+  <div class="estrelas">${[1,2,3].map(n=>`<span class="${n<=V.st?"":"off"}">⭐</span>`).join("")}</div>
+  <p id="fim">${esc(i.fim)} Acertaste ${V.pr} de 6 problemas à primeira.</p>${ouvir("#fim")}
+  ${V.nova?`<p><b>Prémio da ilha:</b> +10 🐚 e +20 pontos</p>`:""}
+  <div class="linha c esp">${V.st<3?`<button class="btn branco" data-a="ilha" data-v="${V.i}">Tentar as 3 estrelas</button>`:""}<button class="btn verde" data-a="ir" data-v="${luzes(J)>=9&&V.nova?"final":"mapa"}">${luzes(J)>=9&&V.nova?"Ir para o farol":"Voltar ao mapa"}</button></div></div>`};
+E.final=()=>`${topo()}<div class="folha"><div class="diploma"><div style="font-size:4.5rem;line-height:1">🗼</div><h1>O farol voltou a brilhar!</h1>
+  <p id="fin">Graças a ti, as nove luzes voltaram ao Farol das Nove Luzes. Os barcos já encontram o caminho para casa e todos os Açores fazem uma grande festa!</p>${ouvir("#fin")}
+  <div style="width:150px;margin:.6rem auto">${avatarSVG(J.av,"festa")}</div>
+  <h2>${esc(J.nome)}</h2><p>resolveu os problemas das nove ilhas e é<br><b style="font-size:1.3rem">Guardião das Nove Luzes</b></p>
+  <p>${estrelas(J)} de 27 estrelas · ${J.crachas.length} crachás</p></div>
+  <div class="linha c esp"><button class="btn" data-a="ir" data-v="mapa">Voltar ao mapa</button></div>
+  <p class="centro" style="font-size:.85rem">Ainda podes voltar a cada ilha para conquistar todas as estrelas e jogar os desafios.</p></div>`;
+
+E.bau=()=>`${topo()}<div class="folha"><h2 id="tb">Baú de prémios</h2><p id="pb">Troca as tuas conchas por chapéus, óculos e amigos de viagem. Tens ${J.conchas} conchas.</p>${ouvir("#pb")}
+  <div class="grade">${LOJA.map(l=>{const tem=J.tem.includes(l.id);return `<div class="item"><div class="e">${l.e}</div><b>${l.n}</b>${tem?`<small>Já é teu!</small><button class="btn peq branco" data-a="usar" data-v="${l.id}">${J.av[l.t]===l.id?"Tirar":"Usar"}</button>`:`<small>🐚 ${l.c} conchas</small><button class="btn peq" data-a="comprar" data-v="${l.id}" ${J.conchas<l.c?"disabled":""}>${J.conchas<l.c?"Faltam "+(l.c-J.conchas):"Trocar"}</button>`}</div>`}).join("")}</div>
+  <div class="centro esp"><button class="btn branco" data-a="ir" data-v="mapa">Voltar ao mapa</button></div></div>`;
+E.crachas=()=>`${topo()}<div class="folha"><h2>Os teus crachás</h2><p>Tens ${J.crachas.length} de ${CRACHAS.length}.</p>
+  <div class="grade">${CRACHAS.map(c=>`<div class="item ${J.crachas.includes(c.id)?"":"falta"}"><div class="e">${c.e}</div><b>${c.n}</b><small>${c.d}</small></div>`).join("")}</div>
+  <div class="centro esp"><button class="btn branco" data-a="ir" data-v="mapa">Voltar ao mapa</button></div></div>`;
+E.desafios=()=>`${topo()}<div class="folha"><h2>Desafios</h2><p id="pd">Jogos rápidos para ganhar mais conchas. Podes jogar as vezes que quiseres!</p>${ouvir("#pd")}
+  <div class="grade" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+  <div class="item"><div class="e">⚡</div><b>Relâmpago</b><small>10 contas rápidas.</small><button class="btn peq" data-a="raio">Jogar</button></div>
+  <div class="item"><div class="e">🧠</div><b>Jogo da Memória</b><small>Junta cada conta ao seu resultado.</small><button class="btn peq" data-a="memoria">Jogar</button></div>
+  <div class="item"><div class="e">🧩</div><b>Que número falta?</b><small>Descobre o segredo de 6 sequências.</small><button class="btn peq" data-a="seq">Jogar</button></div>
+  <div class="item"><div class="e">✏️</div><b>Fábrica de problemas</b><small>Inventa um problema e resolve-o.</small><button class="btn peq" data-a="ir" data-v="fabrica">Inventar</button></div>
+  </div><div class="centro esp"><button class="btn branco" data-a="ir" data-v="mapa">Voltar ao mapa</button></div></div>`;
+
+/* ----- mini-jogos ----- */
+function conta(){const t=rnd(3);let a,b,e,r;
+  if(t===0){a=2+rnd(28);b=1+rnd(20);e=`${a} + ${b}`;r=a+b}
+  else if(t===1){a=8+rnd(32);b=1+rnd(Math.min(a-1,15));e=`${a} − ${b}`;r=a-b}
+  else{a=[2,3,4,5,10][rnd(5)];b=1+rnd(10);e=`${b} × ${a}`;r=a*b}
+  return{e,r}}
+function opcoes(r){const s=new Set([r]);while(s.size<3){const v=r+[-3,-2,-1,1,2,3,10,-10][rnd(8)];if(v>=0)s.add(v)}return baralha([...s])}
+function novoQuiz(tipo){
+  const qs=[];const n=tipo==="raio"?10:6;
+  for(let i=0;i<n;i++){
+    if(tipo==="raio"){const c=conta();qs.push({e:c.e+" = ?",r:c.r,o:opcoes(c.r)})}
+    else{const d=[2,5,10,3,4][rnd(5)],s=rnd(12)*(rnd(2)?1:d),pos=1+rnd(4),arr=[0,1,2,3,4].map(k=>s+k*d);qs.push({arr,pos,r:arr[pos],o:opcoes(arr[pos]),d})}
+  }
+  V={ecra:"quiz",tipo,qs,n:0,certas:0,est:""};desenha();
+}
+E.quiz=()=>{const q=V.qs[V.n],raio=V.tipo==="raio";
+  const corpo=raio?`<div class="conta" id="cq">${q.e}</div>`:`<p class="centro" id="cq">Que número falta nesta sequência?</p><div class="seq">${q.arr.map((v,k)=>`<span ${k===q.pos?'style="border-color:var(--erro);color:var(--erro)"':""}>${k===q.pos?(V.est?q.r:"?"):v}</span>`).join("")}</div>`;
+  return `${topo()}<div class="folha centro"><h2>${raio?"⚡ Relâmpago":"🧩 Que número falta?"}</h2><p>${V.n+1} de ${V.qs.length} · Certas: ${V.certas}</p>${corpo}
+  ${V.est?`<div class="fala ${V.est}" style="justify-content:center">${V.est==="bem"?"Certo!":`A resposta era ${q.r}.`}${!raio&&V.est==="mal"?` Anda de ${q.d} em ${q.d}.`:""}</div><button class="btn verde" data-a="quizSeg" id="seg">${V.n<V.qs.length-1?"Seguinte":"Terminar"}</button>`
+  :`<div class="linha c">${q.o.map(o=>`<button class="btn branco" style="min-width:96px;font-size:1.6rem" data-a="quizR" data-v="${o}">${o}</button>`).join("")}</div><div class="esp">${ouvir("#cq")}</div>`}
+  </div>`};
+function fimMini(titulo,txt,co,xp){ganha(xp,co);som("festa");festa();V={ecra:"fimMini",titulo,txt,co};desenha()}
+E.fimMini=()=>`${topo()}<div class="folha centro"><div style="width:130px;margin:0 auto">${avatarSVG(J.av,"festa")}</div><h2>${V.titulo}</h2><p>${V.txt}</p><p><b>Ganhaste ${V.co} 🐚</b></p>
+  <div class="linha c esp"><button class="btn azul" data-a="ir" data-v="desafios">Outro desafio</button><button class="btn branco" data-a="ir" data-v="mapa">Voltar ao mapa</button></div></div>`;
+function novaMemoria(){const usados=new Set(),cartas=[];
+  while(cartas.length<12){const c=conta();if(usados.has(c.r))continue;usados.add(c.r);cartas.push({t:c.e,p:c.r},{t:String(c.r),p:c.r})}
+  V={ecra:"memoria",cartas:baralha(cartas),viradas:[],pares:[],jogadas:0,bloq:false};desenha()}
+E.memoria=()=>`${topo()}<div class="folha centro"><h2>🧠 Jogo da Memória</h2><p id="pm">Vira duas cartas. Junta cada conta ao seu resultado.</p>${ouvir("#pm")}
+  <div class="mem">${V.cartas.map((c,k)=>{const par=V.pares.includes(k),v=par||V.viradas.includes(k);return `<button class="carta ${par?"par":v?"v":""}" data-a="carta" data-v="${k}" aria-label="${v?c.t:"Carta virada para baixo"}">${v?c.t:"?"}</button>`}).join("")}</div>
+  <p>Jogadas: ${V.jogadas}</p><button class="btn branco" data-a="ir" data-v="desafios">Sair</button></div>`;
+
+const FAB={quem:[["A Ana","a"],["O Rui","o"],["A Sofia","a"],["O Tiago","o"],["A avó Luísa","a"],["O Milo","o"]],
+  coisa:[["🐚","conchas","f"],["🍎","maçãs","f"],["⚽","bolas","f"],["🐟","peixes","m"],["🧀","queijos","m"],["🎈","balões","m"]]};
+E.fabrica=()=>{const f=V.f||(V.f={q:0,c:0,op:"+",a:12,b:5});const c=FAB.coisa[f.c];
+  const txt=textoFab(f);
+  const pass=(k,min,max)=>`<span class="passo-n"><button class="tecla" style="min-height:48px;width:52px" data-a="fab" data-k="${k}" data-v="-1" aria-label="Menos">−</button><span style="min-width:2ch;text-align:center">${f[k]}</span><button class="tecla" style="min-height:48px;width:52px" data-a="fab" data-k="${k}" data-v="1" aria-label="Mais">+</button></span>`;
+  return `${topo()}<div class="folha"><h2>✏️ Fábrica de problemas</h2><p>Escolhe as peças e inventa o teu problema.</p>
+  <h3>Quem?</h3><div class="opc">${FAB.quem.map((q,k)=>`<button class="op ${f.q===k?"sel":""}" style="font-size:1rem" data-a="fab" data-k="q" data-v="${k}">${q[0]}</button>`).join("")}</div>
+  <h3>O quê?</h3><div class="opc">${FAB.coisa.map((q,k)=>`<button class="op ${f.c===k?"sel":""}" data-a="fab" data-k="c" data-v="${k}" aria-label="${q[1]}">${q[0]}</button>`).join("")}</div>
+  <h3>O que aconteceu?</h3><div class="opc"><button class="op ${f.op==="+"?"sel":""}" style="font-size:1rem" data-a="fab" data-k="op" data-v="+">Recebeu mais</button><button class="op ${f.op==="-"?"sel":""}" style="font-size:1rem" data-a="fab" data-k="op" data-v="-">Deu a um amigo</button></div>
+  <div class="linha" style="gap:1.5rem"><div><h3>Tinha</h3>${pass("a")}</div><div><h3>${f.op==="+"?"Recebeu":"Deu"}</h3>${pass("b")}</div></div>
+  <div class="perg esp" id="pf">${c[0]} ${esc(txt)}</div>
+  <div class="linha">${ouvir("#pf")}<button class="btn verde" data-a="fabOk">Resolver o meu problema</button><button class="btn branco" data-a="ir" data-v="desafios">Voltar</button></div></div>`};
+function textoFab(f){const q=FAB.quem[f.q],c=FAB.coisa[f.c],Q=c[2]==="f"?"quantas":"Quantos".toLowerCase();
+  return `${q[0]} tinha ${f.a} ${c[1]}. ${f.op==="+"?`Recebeu mais ${f.b}`:`Deu ${f.b} a um amigo`}. Com ${Q} ${c[1]} ficou ${q[0].replace(/^A /,"a ").replace(/^O /,"o ")}?`}
+
+/* ============ AÇÕES ============ */
+const A={
+  ir(v){calar();V={ecra:v,cena:0,nome:"",av:V.av};if(v==="historia")V.cena=0;desenha()},
+  ler(v){const t=[...document.querySelectorAll(v)].map(e=>e.innerText).join(". ");ler(t)},
+  som(){D.som=!D.som;guardar();desenha();if(D.som)som("bem")},
+  lerSempre(){D.lerSempre=!D.lerSempre;guardar();aviso(D.lerSempre?"Vou ler os problemas em voz alta.":"Só leio quando tocares em Ouvir.");if(!D.lerSempre)calar();desenha()},
+  sair(){calar();J=null;V={ecra:"jogadores"};desenha()},
+  entrar(v){J=D.jogadores.find(j=>j.id===v);V={ecra:"mapa"};desenha()},
+  apagar(v){V.apagar=v;desenha()},apagarNao(){V.apagar=null;desenha()},
+  apagarSim(v){D.jogadores=D.jogadores.filter(j=>j.id!==v);V.apagar=null;guardar();desenha()},
+  av(v,el){const k=el.dataset.k;V.av[k]=["chapeu","oculos","amigo"].includes(k)?v:+v;som("clique");desenha()},
+  avOk(){
+    if(!J){J={id:"j"+Date.now(),nome:V.nome,av:V.av,xp:0,conchas:0,ilhas:{},crachas:[],tem:[],serie:0};D.jogadores.push(J);guardar();V={ecra:"historia",cena:0};}
+    else{J.av=V.av;guardar();V={ecra:"mapa"}}
+    desenha()},
+  editarAv(){V={ecra:"avatar",av:Object.assign({},J.av)};desenha()},
+  cena(v){calar();V.cena+=+v;if(V.cena>=HISTORIA.length)V={ecra:"mapa"};desenha();if(D.lerSempre&&V.ecra==="historia")ler(HISTORIA[V.cena].t)},
+  ilha(v){v=+v;if(v>luzes(J)){aviso("Esta ilha ainda está fechada. Recupera primeiro a luz de "+ILHAS[luzes(J)].nome+"!");som("mal");return}
+    V={ecra:"ilha",i:v};desenha();if(D.lerSempre)ler(ILHAS[v].intro)},
+  comecar(){const il=ILHAS[V.i],idx=baralha(il.probs.map((_,k)=>k)).slice(0,6).sort((a,b)=>a-b);
+    iniciar(il.nome+" · "+il.tema,idx.map(k=>il.probs[k]),fimIlha,{i:V.i})},
+  tecla(v){if(V.estado==="mal")V.estado="";if(v==="x")V.txt=V.txt.slice(0,-1);else if(V.txt.length<3)V.txt=(V.txt==="0"?"":V.txt)+v;som("clique");
+    const vi=$("#visor");if(vi){vi.innerHTML=V.txt||"&nbsp;";vi.classList.remove("mal")}},
+  verifica(){if(V.txt===""){aviso("Escreve primeiro a tua resposta com os números.");return}
+    responde(+V.txt===V.probs[V.n].s[V.passo].a)},
+  escolhe(v){responde(+v===V.probs[V.n].s[V.passo].a)},
+  dica(){V.dica=!V.dica;desenha();if(V.dica&&D.lerSempre)A.ler("#dica")},
+  seguinte(){seguinte()},
+  comprar(v){const l=LOJA.find(l=>l.id===v);if(J.conchas<l.c)return;J.conchas-=l.c;J.tem.push(l.id);J.av[l.t]=l.id;guardar();cracha("estilo");som("festa");festa(10);aviso(l.n+" já é teu!");desenha()},
+  usar(v){const l=LOJA.find(l=>l.id===v);J.av[l.t]=J.av[l.t]===v?"":v;guardar();desenha()},
+  raio(){novoQuiz("raio")},seq(){novoQuiz("seq")},memoria(){novaMemoria()},
+  quizR(v){const q=V.qs[V.n];if(+v===q.r){V.certas++;V.est="bem";som("bem")}else{V.est="mal";som("mal")}desenha();$("#seg").focus()},
+  quizSeg(){if(V.n<V.qs.length-1){V.n++;V.est="";desenha();return}
+    const c=V.certas,t=V.qs.length,raio=V.tipo==="raio";
+    if(c===t)cracha(raio?"raio":"seq");
+    fimMini(raio?"Relâmpago terminado!":"Sequências terminadas!",`Acertaste ${c} de ${t}.`,Math.ceil(c/2),c)},
+  carta(v){v=+v;if(V.bloq||V.viradas.includes(v)||V.pares.includes(v))return;V.viradas.push(v);som("clique");
+    if(V.viradas.length===2){V.jogadas++;const [a,b]=V.viradas;
+      if(V.cartas[a].p===V.cartas[b].p){V.pares.push(a,b);V.viradas=[];som("bem");
+        if(V.pares.length===12){desenha();cracha("memo");setTimeout(()=>fimMini("Encontraste todos os pares!",`Precisaste de ${V.jogadas} jogadas.`,5,8),700);return}}
+      else{V.bloq=true;setTimeout(()=>{if(V.ecra==="memoria"){V.viradas=[];V.bloq=false;desenha()}},1300)}}
+    desenha()},
+  fab(v,el){const f=V.f,k=el.dataset.k;
+    if(k==="a"||k==="b"){f[k]=Math.max(1,Math.min(50,f[k]+ +v))}else f[k]=k==="op"?v:+v;
+    if(f.op==="-"&&f.b>f.a)f.b=f.a;som("clique");desenha()},
+  fabOk(){const f=V.f,c=FAB.coisa[f.c],r=f.op==="+"?f.a+f.b:f.a-f.b;
+    const pr={t:textoFab(f),s:[{a:r,u:c[1],e:`${f.a} ${f.op==="+"?"+":"−"} ${f.b}`,h:f.op==="+"?pw(r,[f.a,f.b],"w"):pw(f.a,[f.b,r],1)}]};
+    iniciar("O meu problema",[pr],()=>{cracha("autor");fimMini("Problema resolvido!","Inventaste um problema teu. Mostra-o a um colega e vê se ele o resolve!",3,5)})}
+};
+document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(!el||el.disabled)return;A[el.dataset.a](el.dataset.v,el)});
+document.addEventListener("keydown",e=>{
+  const el=e.target.closest&&e.target.closest("g[data-a]");
+  if(el&&(e.key==="Enter"||e.key===" ")){e.preventDefault();A[el.dataset.a](el.dataset.v,el);return}
+  if(V.ecra==="jogo"&&!V.probs[V.n].s[V.passo].o&&V.estado!=="bem"&&V.estado!=="mostra"){
+    if(/^[0-9]$/.test(e.key))A.tecla(e.key);else if(e.key==="Backspace")A.tecla("x");else if(e.key==="Enter"&&!e.target.closest("button")){A.verifica()}
+  }});
+document.addEventListener("submit",e=>{e.preventDefault();
+  const n=$("#nome").value.trim();
+  if(!n){V.erro="Escreve o teu nome para continuar.";V.nome="";desenha();$("#nome").focus();return}
+  V={ecra:"avatar",nome:n,av:{pele:rnd(6),cabelo:rnd(5),corCabelo:rnd(6),roupa:rnd(6),chapeu:"",oculos:"",amigo:""}};desenha()});
+function desenha(){$("#app").innerHTML=E[V.ecra]();if(V.ecra!=="jogo"||(!V.txt&&!V.estado&&!V.dica))scrollTo(0,0);const n=$("#nome");if(n)n.focus()}
+carregar();
+if("speechSynthesis" in window){try{speechSynthesis.getVoices()}catch(e){}}
+desenha();
+</script>
+</body>
+</html>
